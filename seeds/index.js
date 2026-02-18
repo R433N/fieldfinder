@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const cities = require('./cities')
-const field = require('../models/field')
+const Field = require('../models/field')
 const {fieldNames} = require('./seedHelpers')
 
 mongoose.connect('mongodb://localhost:27017/fieldfinder')
@@ -18,7 +18,7 @@ const seedDB = async() => {
     await field.deleteMany({});
     for (let i = 0; i < 10; i++) {
         const random50 = Math.floor(Math.random() * cities.length);
-        const test = new field({
+        const test = new Field({
             location: `${cities[random50].name}, ${cities[random50].province}`,
             title: `${sample(fieldNames)}`
         })
