@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const fieldSchema = new Schema({
-    title: { type: String },
-    cityLocation: { type: String },
-    fieldType: { type: String }
+    title:  String ,
+    location:  String ,
+    fieldType:  String
 
 })
 
-module.exports = mongoose.model('field', fieldSchema);
+module.exports = mongoose.model('Field', fieldSchema);
