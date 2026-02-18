@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path')
-const field = require('./models/field')
+const Field = require('./models/field');
 
 mongoose.connect('mongodb://localhost:27017/fieldfinder')
 
@@ -23,11 +23,14 @@ app.get('/', (req, res) => {
 })
 
 app.get('/fields', async (req, res) => {
-    const fields = await field.find({})
+    const fields = await Field.find({})
     res.render('fields/index', {fields})
 })
 
-
+app.get('/fields/:id', async (req, res) => {
+    const field = await Field.findById(req.params.id);
+    res.render('fields/show', {field});
+})
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
