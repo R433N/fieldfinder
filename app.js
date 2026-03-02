@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path')
+const methodOverride = require('method-override')
 const Field = require('./models/field');
 
 mongoose.connect('mongodb://localhost:27017/fieldfinder')
@@ -18,6 +19,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({extended: true}));
+app.use(methodOverride('_method'));
 
 app.get('/', (req, res) => {
     res.render('home');
@@ -42,6 +44,29 @@ app.get('/fields/:id', async (req, res) => {
     const field = await Field.findById(req.params.id);
     res.render('fields/show', {field});
 })
+
+app.get('/fields/:id/edit', async (req, res) => {
+    const field = await Field.findById(req.params.id);
+    res.render('fields/edit', {field});
+})
+
+app.put('/fields/:id', async (req, res) => {
+    const {id} = req.params;
+    const field = await Field.findByIdAndUpdate(id, { ...req.body.field });
+    res.redirect(`/fields/${field._id}`);
+})
+
+app.delete("/fields/:id", async (req,res) => {
+    const{id} = req.params;
+    await Field.findByIdAndDelete(id);
+    res.redirect('/fields');
+})
+
+
+
+
+
+
 
 
 app.listen(3000, () => {

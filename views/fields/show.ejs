@@ -8,8 +8,14 @@
 <body>
     <h1><%=field.title %></h1>
     <h2><%=field.location %></h2>
+    <p>
+        <form action="/fields/<%=field._id%>?_method=DELETE" method="POST">
+            <button>DELETE</button>
+        </form>
+    </p>
     <footer>
         <a href="/fields">All Fields</a>
+        <a href="/fields/<%= field._id%>/edit">Edit</a>
     </footer>
 </body>
 </html>
