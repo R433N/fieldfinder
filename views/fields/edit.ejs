@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Field</title>
+</head>
+<body>
+    <h1>Edit Field</h1>
+    <form action="/fields/<%= field._id %>?_method=PUT" method="POST">
+            <div>
+                <label for="title">Title</label>
+                <input type="text" id="title" name="field[title]" value="<%=field.title %>">
+            </div>
+            <div>
+                <label for="location">Location</label>
+                <input type="text" id="location" name="field[location]" value="<%=field.location %>">
+
+            </div>
+            <button>Save Field Changes</button>
+            <a href="/fields/<%= field._id %>">Back to Fields</a>
+    </form>
+</body>
+</html>
