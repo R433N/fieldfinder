@@ -15,15 +15,17 @@ const sample = (array) => array[Math.floor(Math.random() * array.length)];
 
 
 const seedDB = async() => {
-    await field.deleteMany({});
+    await Field.deleteMany({});
     for (let i = 0; i < 10; i++) {
         const random50 = Math.floor(Math.random() * cities.length);
         const test = new Field({
             location: `${cities[random50].name}, ${cities[random50].province}`,
-            title: `${sample(fieldNames)}`
+            title: `${sample(fieldNames)}`,
+            image: `https://picsum.photos/400?random=${Math.random()}`,
+            fieldType: 'Artificial Grass',
+            phone: '123-456-7890'
         })
         await test.save();
     }
 }
-
 seedDB();
