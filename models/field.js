@@ -3,8 +3,10 @@ const Schema = mongoose.Schema;
 
 const fieldSchema = new Schema({
     title:  String ,
+    image: String,
     location:  String ,
-    fieldType:  String
+    fieldType:  String,
+    phone: { type: String, default: 'Unavailable' }
 
 })
 

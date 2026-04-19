@@ -1,23 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Field</title>
-</head>
-<body>
-    <form action="/fields" method="POST">
-            <div>
-                <label for="title">Title</label>
-                <input type="text" id = "title" name="field[title]">
+<% layout ('layouts/boilerplate') %>
+    <div class="row">
+        <h1 class="text-center">New Field</h1>
+        <div class="col-6 offset-3">
+            <form action="/fields" method="POST">
+             <div class="mb-3">
+                <label class= "form-label"for="title">Title</label>
+                <input class="form-control" type="text" id = "title" name="field[title]">
             </div>
-            <div>
-                <label for="location">Location</label>
-                <input type="text" id="location" name="field[location]">
+            <div class="mb-3">
+                <label class= "form-label" for="location">Location</label>
+                <input class="form-control" type="text" id="location" name="field[location]">
 
             </div>
-            <button>Add Field Location</button>
+            <div class="mb-3">
+                <label class= "form-label" for="image">Image URL</label>
+                <input class="form-control" type="text" id="image" name="field[image]">
+
+            </div>
+
+            <div class="mb-3">
+                <label class= "form-label" for="fieldType">Field Type</label>
+                <input class="form-control" type="text" id="fieldType" name="field[fieldType]">
+
+            </div>
+
+            <div class="mb-3">
+                <label class= "form-label" for="phone">Phone Number</label>
+                <input class="form-control" type="text" id="phone" name="field[phone]" placeholder="(123)-456-7890">
+
+            </div>
+
+            <div class="mb-3">
+              <button class="btn btn-success">Add Field Location</button>
+            </div>
             <a href="/fields">All Fields</a>
-    </form>
-</body>
-</html>
+            </form>
+
+        </div>
+    </div>
