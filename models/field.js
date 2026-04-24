@@ -6,7 +6,7 @@ const fieldSchema = new Schema({
     image: String,
     location:  String ,
     fieldType:  String,
-    phone: { type: String, default: 'Unavailable' }
+    phone: { type: Number }
 
 })
 
