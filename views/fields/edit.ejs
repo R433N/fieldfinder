@@ -3,32 +3,39 @@
     <div class="row">
     <h1 class="text-center">Edit Field</h1>
     <div class="col-6 offset-3">
-        <form action="/fields/<%= field._id %>?_method=PUT" method="POST">
+        <form action="/fields/<%= field._id %>?_method=PUT" method="POST" novalidate class="validatedform">
 
             <div class="mb-3">
             <label class= "form-label"for="title">Title</label>
-            <input class="form-control" type="text" id = "title" name="field[title]" value="<%=field.title %>">
+            <input class="form-control" type="text" id = "title" name="field[title]" value="<%=field.title %>" required>
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Field name is required!</div>
         </div>
         <div class="mb-3">
             <label class= "form-label" for="location">Location</label>
-            <input class="form-control" type="text" id="location" name="field[location]" value="<%=field.location %>">
-
+            <input class="form-control" type="text" id="location" name="field[location]" value="<%=field.location %>" required>
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Location is required!</div>
         </div>
         <div class="mb-3">
             <label class= "form-label" for="image">Image URL</label>
-            <input class="form-control" type="text" id="image" name="field[image]" value="<%=field.image %>">
-
+            <input class="form-control" type="text" id="image" name="field[image]" value="<%=field.image %>" required>
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Please provide an Image URL.</div>
         </div>
-
+        
         <div class="mb-3">
             <label class= "form-label" for="fieldType">Field Type</label>
-            <input class="form-control" type="text" id="fieldType" name="field[fieldType]" value="<%=field.fieldType %>">
-
+            <input class="form-control" type="text" id="fieldType" name="field[fieldType]" value="<%=field.fieldType %>" required>
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Field Type is required!</div>
         </div>
 
         <div class="mb-3">
             <label class= "form-label" for="phone">Phone Number</label>
-            <input class="form-control" type="text" id="phone" name="field[phone]" placeholder="(123)-456-7890">
+            <input class="form-control" type="text" id="phone" name="field[phone]" placeholder="(123)-456-7890" required>
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Type N/A if unapplicable.</div>
 
         </div>
 

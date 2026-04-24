@@ -1,9 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
+const { fieldSchema } = require('./schemas');
+const catchAsync = require('./utils/catchAsync');
+const ExpressError = require('./utils/ExpressError')
 const path = require('path')
 const methodOverride = require('method-override')
 const Field = require('./models/field');
+const { off } = require('process');
 
 mongoose.connect('mongodb://localhost:27017/fieldfinder')
 
@@ -22,48 +26,70 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
 
+const validateField = (req, res, next) => {
+       //if(!req.body.field) throw new ExpressError('Invalid Field Data', 400)
+
+   const { error } = fieldSchema.validate(req.body);
+   if(error){
+    const msg = error.details.map(el => el.message).join(',')
+    throw new ExpressError(msg, 400)
+   }
+   else{
+        next();
+   }
+}
+
 app.get('/', (req, res) => {
     res.render('home');
 })
 
-app.get('/fields', async (req, res) => {
-    const fields = await Field.find({})
-    res.render('fields/index', {fields})
-})
+app.get('/fields', catchAsync(async (req, res) => {
+    const fields = await Field.find({});
+    res.render('fields/index', { fields });
+}));
 
 app.get('/fields/new', (req, res) => {
     res.render('fields/new');
 })
 
-app.post('/fields', async (req, res) => {
+app.post('/fields', validateField, catchAsync(async (req, res) => {
+
     const field = new Field(req.body.field);
     await field.save();
     res.redirect(`/fields/${field._id}`);
-})
+}))
 
-app.get('/fields/:id', async (req, res) => {
+app.get('/fields/:id', catchAsync(async (req, res) => {
     const field = await Field.findById(req.params.id);
     res.render('fields/show', {field});
-})
+}))
 
-app.get('/fields/:id/edit', async (req, res) => {
+app.get('/fields/:id/edit', catchAsync(async (req, res) => {
     const field = await Field.findById(req.params.id);
     res.render('fields/edit', {field});
-})
+}))
 
-app.put('/fields/:id', async (req, res) => {
+app.put('/fields/:id', validateField, catchAsync(async (req, res) => {
     const {id} = req.params;
     const field = await Field.findByIdAndUpdate(id, { ...req.body.field });
     res.redirect(`/fields/${field._id}`);
-})
+}))
 
-app.delete("/fields/:id", async (req,res) => {
+app.delete("/fields/:id", catchAsync(async (req,res) => {
     const{id} = req.params;
     await Field.findByIdAndDelete(id);
     res.redirect('/fields');
+}))
+
+app.all('/{*path}', (req, res, next) => {
+    next(new ExpressError("Page Not Found", 404));
 })
 
-
+app.use((err, req, res, next) => {
+    const { statusCode = 500, message = "Something went wrong"} = err
+    if(!err.message) err.message = "Oh No, Something Went Wrong!"
+    res.status(statusCode).render('error', {err})
+})
 
 
 
