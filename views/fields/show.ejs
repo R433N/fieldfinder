@@ -1,6 +1,6 @@
 <% layout ('layouts/boilerplate') %>
 <div class="row">
-    <div class="col-6 offset-3">
+    <div class="col-6">
         <div class="card mb-3">
         <img src="<%=field.image%>" class="card-img-top" alt="...">
         <div class="card-body">
@@ -12,11 +12,41 @@
             <li class="list-group-item"><%=field.phone%></li>
         </ul>
         <div class="card-body">
-            <a class="card-link btn btn-info d-inline" href="/fields/<%=field._id%>/edit">Edit</a>
-            <a class="card-link btn btn-danger d-inline" href="/fields/<%=field._id%>?_method=DELETE">Delete</a>
+            <a class="card-link btn btn-info" href="/fields/<%=field._id%>/edit">Edit</a>
+            <form action="/fields/<%=field._id%>?_method=DELETE" method="POST" class="d-inline">
+                <button class="btn btn-danger">Delete</button>
+            </form>
         </div>
         <div class="card-footer text-muted">2 days ago</div>
         </div>
+
+    </div>
+    <div class="col-6">
+        <h3>Leave a Review</h3>
+        <form action="/fields/<%=field._id%>/reviews" method="POST" class="mb-3 validatedform" novalidate>
+                <div class="mb-3">
+                    <label class="form-label" for="rating">Rating</label>
+                    <input class="form-range" type="range" min="1" max="5" step="1" name="review[rating]" id="rating">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="body">Review</label>
+                    <textarea class="form-control" name="review[body]" id="body" cols="30" rows="2" required></textarea>
+                    <div class="valid-feedback">Looks good!</div>
+                </div>
+                <button class="btn btn-primary">Submit Review</button>
+            </form>
+            <% for (let review of field.reviews) { %>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><strong>Rating</strong>: <%= review.rating %></h5>
+                    <p class="card-text"><strong>Review:</strong> <%= review.body %></p>
+                    <form action="/fields/<%=field._id%>/reviews/<%=review._id%>?_method=DELETE" method="POST" class="d-inline">
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </div>
+                
+            </div>
+            <% } %>
     </div>
 </div>
     <footer>
