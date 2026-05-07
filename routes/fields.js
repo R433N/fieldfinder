@@ -1,0 +1,65 @@
+const express = require('express');
+const mongoose = require('mongoose');
+const router = express.Router();
+const catchAsync = require('../utils/catchAsync');
+const ExpressError = require('../utils/ExpressError')
+const Field = require('../models/field');
+const { fieldSchema} = require('../schemas.js');
+
+
+const validateField = (req, res, next) => {
+       //if(!req.body.field) throw new ExpressError('Invalid Field Data', 400)
+
+   const { error } = fieldSchema.validate(req.body);
+   if(error){
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+   }
+   else{
+        next();
+   }
+}
+
+router.get('', catchAsync(async (req, res) => {
+    const fields = await Field.find({});
+    res.render('fields/index', { fields });
+}));
+
+router.get('/new', (req, res) => {
+    res.render('fields/new');
+})
+
+router.post('/fields', validateField, catchAsync(async (req, res) => {
+
+    const field = new Field(req.body.field);
+    await field.save();
+    res.redirect(`/fields/${field._id}`);
+}))
+
+router.get('/:id', catchAsync(async (req, res) => {
+     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    throw new ExpressError('Invalid Field ID', 400);
+  }
+    const field = await Field.findById(req.params.id).populate('reviews');
+    console.log(field);
+    res.render('fields/show', {field});
+}))
+
+router.get('/:id/edit', catchAsync(async (req, res) => {
+    const field = await Field.findById(req.params.id);
+    res.render('fields/edit', {field});
+}))
+
+router.put('/:id', validateField, catchAsync(async (req, res) => {
+    const {id} = req.params;
+    const field = await Field.findByIdAndUpdate(id, { ...req.body.field });
+    res.redirect(`/fields/${field._id}`);
+}))
+
+router.delete("/:id", catchAsync(async (req,res) => {
+    const{id} = req.params;
+    await Field.findByIdAndDelete(id);
+    res.redirect('/fields');
+}))
+
+module.exports = router;
