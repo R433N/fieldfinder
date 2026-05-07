@@ -1,13 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
-const { fieldSchema } = require('./schemas');
+const { fieldSchema, reviewSchema} = require('./schemas.js');
 const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError')
 const path = require('path')
 const methodOverride = require('method-override')
 const Field = require('./models/field');
 const { off } = require('process');
+const field = require('./models/field');
+const Review = require('./models/review');  
+const { constants } = require('os');
 
 mongoose.connect('mongodb://localhost:27017/fieldfinder')
 
@@ -31,12 +34,24 @@ const validateField = (req, res, next) => {
 
    const { error } = fieldSchema.validate(req.body);
    if(error){
-    const msg = error.details.map(el => el.message).join(',')
-    throw new ExpressError(msg, 400)
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
    }
    else{
         next();
    }
+}
+
+const validateReview = (req, res, next) => {
+
+    const {error} = reviewSchema.validate(req.body);
+    if(error){
+        const msg = error.details.map(el => el.message).join(',')
+        throw new ExpressError(msg, 400)
+    }
+    else{
+        next();
+    }
 }
 
 app.get('/', (req, res) => {
@@ -60,7 +75,11 @@ app.post('/fields', validateField, catchAsync(async (req, res) => {
 }))
 
 app.get('/fields/:id', catchAsync(async (req, res) => {
-    const field = await Field.findById(req.params.id);
+     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    throw new ExpressError('Invalid Field ID', 400);
+  }
+    const field = await Field.findById(req.params.id).populate('reviews');
+    console.log(field);
     res.render('fields/show', {field});
 }))
 
@@ -79,6 +98,23 @@ app.delete("/fields/:id", catchAsync(async (req,res) => {
     const{id} = req.params;
     await Field.findByIdAndDelete(id);
     res.redirect('/fields');
+}))
+
+app.post('/fields/:id/reviews', validateReview, catchAsync(async (req, res) => {
+    const field = await Field.findById(req.params.id);
+    const review = new Review(req.body.review);
+   
+    field.reviews.push(review);
+    await review.save();
+    await field.save();
+    res.redirect(`/fields/${field._id}`);
+}))
+
+app.delete('/fields/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+    const { id , reviewId } = req.params
+    await Field.findByIdAndUpdate(id, {$pull: {reviews: reviewId}})
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/fields/${id}`)
 }))
 
 app.all('/{*path}', (req, res, next) => {
