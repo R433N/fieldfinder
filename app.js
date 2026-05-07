@@ -13,6 +13,7 @@ const Review = require('./models/review');
 const { constants } = require('os');
 
 const fields = require('./routes/fields');
+const reviews = require('./routes/reviews');
 
 mongoose.connect('mongodb://localhost:27017/fieldfinder')
 
@@ -33,19 +34,9 @@ app.use(methodOverride('_method'));
 
 
 
-const validateReview = (req, res, next) => {
-
-    const {error} = reviewSchema.validate(req.body);
-    if(error){
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressError(msg, 400)
-    }
-    else{
-        next();
-    }
-}
 
 app.use('/fields', fields);
+app.use('/fields/:id/reviews', reviews);
 
 app.get('/', (req, res) => {
     res.render('home');
@@ -53,22 +44,7 @@ app.get('/', (req, res) => {
 
 
 
-app.post('/fields/:id/reviews', validateReview, catchAsync(async (req, res) => {
-    const field = await Field.findById(req.params.id);
-    const review = new Review(req.body.review);
-   
-    field.reviews.push(review);
-    await review.save();
-    await field.save();
-    res.redirect(`/fields/${field._id}`);
-}))
 
-app.delete('/fields/:id/reviews/:reviewId', catchAsync(async (req, res) => {
-    const { id , reviewId } = req.params
-    await Field.findByIdAndUpdate(id, {$pull: {reviews: reviewId}})
-    await Review.findByIdAndDelete(reviewId);
-    res.redirect(`/fields/${id}`)
-}))
 
 app.all('/{*path}', (req, res, next) => {
     next(new ExpressError("Page Not Found", 404));
