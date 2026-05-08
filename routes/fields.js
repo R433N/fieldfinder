@@ -20,7 +20,7 @@ const validateField = (req, res, next) => {
    }
 }
 
-router.get('', catchAsync(async (req, res) => {
+router.get('/', catchAsync(async (req, res) => {
     const fields = await Field.find({});
     res.render('fields/index', { fields });
 }));
@@ -29,10 +29,10 @@ router.get('/new', (req, res) => {
     res.render('fields/new');
 })
 
-router.post('/fields', validateField, catchAsync(async (req, res) => {
-
+router.post('/', validateField, catchAsync(async (req, res) => {
     const field = new Field(req.body.field);
     await field.save();
+    req.flash('success', 'Successfully made a new field!');
     res.redirect(`/fields/${field._id}`);
 }))
 
@@ -42,7 +42,7 @@ router.get('/:id', catchAsync(async (req, res) => {
   }
     const field = await Field.findById(req.params.id).populate('reviews');
     console.log(field);
-    res.render('fields/show', {field});
+    res.render('fields/show', { field });
 }))
 
 router.get('/:id/edit', catchAsync(async (req, res) => {
