@@ -37,28 +37,35 @@ router.post('/', validateField, catchAsync(async (req, res) => {
 }))
 
 router.get('/:id', catchAsync(async (req, res) => {
-     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-    throw new ExpressError('Invalid Field ID', 400);
-  }
     const field = await Field.findById(req.params.id).populate('reviews');
+    if(!field){
+        req.flash('error', 'Cannot find that field');
+        return res.redirect('/fields');
+    }
     console.log(field);
     res.render('fields/show', { field });
 }))
 
 router.get('/:id/edit', catchAsync(async (req, res) => {
     const field = await Field.findById(req.params.id);
+    if(!field){
+        req.flash('error', 'Cannot find that field');
+        return res.redirect('/fields');
+    }
     res.render('fields/edit', {field});
 }))
 
 router.put('/:id', validateField, catchAsync(async (req, res) => {
     const {id} = req.params;
     const field = await Field.findByIdAndUpdate(id, { ...req.body.field });
+    req.flash('success', 'Successfully updated field!');
     res.redirect(`/fields/${field._id}`);
 }))
 
 router.delete("/:id", catchAsync(async (req,res) => {
     const{id} = req.params;
     await Field.findByIdAndDelete(id);
+    req.flash('success', 'Successfully deleted field!');
     res.redirect('/fields');
 }))
 
