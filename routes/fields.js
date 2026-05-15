@@ -5,6 +5,7 @@ const catchAsync = require('../utils/catchAsync');
 const ExpressError = require('../utils/ExpressError')
 const Field = require('../models/field');
 const { fieldSchema} = require('../schemas.js');
+const{isLoggedIn} = require('../middleware');
 
 
 const validateField = (req, res, next) => {
@@ -25,7 +26,7 @@ router.get('/', catchAsync(async (req, res) => {
     res.render('fields/index', { fields });
 }));
 
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
     res.render('fields/new');
 })
 
@@ -46,7 +47,7 @@ router.get('/:id', catchAsync(async (req, res) => {
     res.render('fields/show', { field });
 }))
 
-router.get('/:id/edit', catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
     const field = await Field.findById(req.params.id);
     if(!field){
         req.flash('error', 'Cannot find that field');
@@ -55,14 +56,14 @@ router.get('/:id/edit', catchAsync(async (req, res) => {
     res.render('fields/edit', {field});
 }))
 
-router.put('/:id', validateField, catchAsync(async (req, res) => {
+router.put('/:id', validateField, isLoggedIn, catchAsync(async (req, res) => {
     const {id} = req.params;
     const field = await Field.findByIdAndUpdate(id, { ...req.body.field });
     req.flash('success', 'Successfully updated field!');
     res.redirect(`/fields/${field._id}`);
 }))
 
-router.delete("/:id", catchAsync(async (req,res) => {
+router.delete("/:id", isLoggedIn, catchAsync(async (req,res) => {
     const{id} = req.params;
     await Field.findByIdAndDelete(id);
     req.flash('success', 'Successfully deleted field!');
