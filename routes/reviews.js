@@ -1,17 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router({mergeParams: true});
-const {validateReview} = require('../middleware');
+const {validateReview, isLoggedIn} = require('../middleware');
 const catchAsync = require('../utils/catchAsync');
 const ExpressError = require('../utils/ExpressError')
 
 const Review = require('../models/review');  
 const Field = require('../models/field');
 
-router.post('/', validateReview, catchAsync(async (req, res) => {
+router.post('/', isLoggedIn, validateReview, catchAsync(async (req, res) => {
     const field = await Field.findById(req.params.id);
     const review = new Review(req.body.review);
-   
+    review.author = req.user._id;
     field.reviews.push(review);
     await review.save();
     await field.save();

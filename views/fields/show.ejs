@@ -27,6 +27,7 @@
 
     </div>
     <div class="col-6">
+        <% if(currentUser) { %>
         <h3>Leave a Review</h3>
         <form action="/fields/<%=field._id%>/reviews" method="POST" class="mb-3 validatedform" novalidate>
                 <div class="mb-3">
@@ -40,6 +41,7 @@
                 </div>
                 <button class="btn btn-primary">Submit Review</button>
             </form>
+            <% } %>
             <% for (let review of field.reviews) { %>
             <div class="card mb-3">
                 <div class="card-body">
