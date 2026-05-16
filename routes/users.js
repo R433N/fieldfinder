@@ -20,11 +20,12 @@ router.post('/register', catchAsync(async (req, res) => {
     try {
         const user = new User({ email, username });
         const registeredUser = await User.register(user, password);
-        console.log('registered:', registeredUser);
+        req.login(registeredUser, err => {
+            if(err) return next(err)
         req.flash('success', 'Welcome to FieldFinder!');
         res.redirect('/fields');
+    })
     } catch (e) {
-        console.error('Registration error:', e);
         req.flash('error', e.message);
         res.redirect('/register');
     }
