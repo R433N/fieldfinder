@@ -30,15 +30,17 @@ router.get('/new', isLoggedIn, (req, res) => {
     res.render('fields/new');
 })
 
-router.post('/', validateField, catchAsync(async (req, res) => {
+router.post('/', isLoggedIn, validateField, catchAsync(async (req, res) => {
     const field = new Field(req.body.field);
+    field.author = req.user._id;
     await field.save();
     req.flash('success', 'Successfully made a new field!');
     res.redirect(`/fields/${field._id}`);
 }))
 
 router.get('/:id', catchAsync(async (req, res) => {
-    const field = await Field.findById(req.params.id).populate('reviews');
+    const field = await Field.findById(req.params.id).populate('reviews').populate('author');
+    console.log(field);
     if(!field){
         req.flash('error', 'Cannot find that field');
         return res.redirect('/fields');

@@ -19,6 +19,7 @@ const seedDB = async() => {
     for (let i = 0; i < 10; i++) {
         const random50 = Math.floor(Math.random() * cities.length);
         const test = new Field({
+            author: '6a03c0e0c601c25fdaf607c2',
             location: `${cities[random50].name}, ${cities[random50].province}`,
             title: `${sample(fieldNames)}`,
             image: `https://picsum.photos/400?random=${Math.random()}`,
