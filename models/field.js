@@ -8,6 +8,10 @@ const fieldSchema = new Schema({
     location:  String ,
     fieldType:  String,
     phone: { type: String },
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     reviews : [{
             type: Schema.Types.ObjectId,
             ref: 'Review'
