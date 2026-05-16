@@ -4,22 +4,10 @@ const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
 const ExpressError = require('../utils/ExpressError')
 const Field = require('../models/field');
-const { fieldSchema} = require('../schemas.js');
-const{isLoggedIn} = require('../middleware');
+const{isLoggedIn, validateField, isAuthor} = require('../middleware');
 
 
-const validateField = (req, res, next) => {
-       //if(!req.body.field) throw new ExpressError('Invalid Field Data', 400)
 
-   const { error } = fieldSchema.validate(req.body);
-   if(error){
-        const msg = error.details.map(el => el.message).join(',')
-        throw new ExpressError(msg, 400)
-   }
-   else{
-        next();
-   }
-}
 
 router.get('/', catchAsync(async (req, res) => {
     const fields = await Field.find({});
@@ -49,8 +37,9 @@ router.get('/:id', catchAsync(async (req, res) => {
     res.render('fields/show', { field });
 }))
 
-router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
-    const field = await Field.findById(req.params.id);
+router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
+    const {id} = req.params;
+    const field = await Field.findById(id);
     if(!field){
         req.flash('error', 'Cannot find that field');
         return res.redirect('/fields');
@@ -58,15 +47,20 @@ router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
     res.render('fields/edit', {field});
 }))
 
-router.put('/:id', validateField, isLoggedIn, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, isAuthor, validateField, catchAsync(async (req, res) => {
     const {id} = req.params;
-    const field = await Field.findByIdAndUpdate(id, { ...req.body.field });
+    const f = await Field.findByIdAndUpdate(id, { ...req.body.field });
     req.flash('success', 'Successfully updated field!');
-    res.redirect(`/fields/${field._id}`);
+    res.redirect(`/fields/${f._id}`);
 }))
 
-router.delete("/:id", isLoggedIn, catchAsync(async (req,res) => {
-    const{id} = req.params;
+router.delete("/:id", isLoggedIn, isAuthor, catchAsync(async (req,res) => {
+    const {id} = req.params;
+    const field = await Field.findById(id)
+    if(!field.author.equals(req.user._id)){
+        req.flash('error', 'You do not have permission to edit this field')
+        return res.redirect(`/fields/${id}`);
+    }
     await Field.findByIdAndDelete(id);
     req.flash('success', 'Successfully deleted field!');
     res.redirect('/fields');
