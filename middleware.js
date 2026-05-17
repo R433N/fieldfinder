@@ -1,9 +1,11 @@
 const {fieldSchema, reviewSchema} = require('./schemas.js');
 const ExpressError = require('./utils/ExpressError');
+const Field = require('./models/field');    
+const Review = require('./models/review.js')
 
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
-        req.session.returnTo = req.originalUrl;
+        req.session.returnTo = req.get('Referrer') || req.originalUrl;
         req.flash('error', 'You must be logged in first!');
         return res.redirect('/login');
     }
@@ -35,6 +37,16 @@ module.exports.isAuthor = async( req, res, next) => {
     const {id} = req.params;
     const field = await Field.findById(id)
     if(!field.author.equals(req.user._id)){
+        req.flash('error', 'You do not have permission to edit this field')
+        return res.redirect(`/fields/${id}`);
+    }
+    next();
+}
+
+module.exports.isReviewAuthor = async( req, res, next) => {
+    const {id, reviewId} = req.params;
+    const review = await Review.findById(reviewId)
+    if(!review.author.equals(req.user._id)){
         req.flash('error', 'You do not have permission to edit this field')
         return res.redirect(`/fields/${id}`);
     }

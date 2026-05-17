@@ -27,13 +27,17 @@ router.post('/', isLoggedIn, validateField, catchAsync(async (req, res) => {
 }))
 
 router.get('/:id', catchAsync(async (req, res) => {
-    const field = await Field.findById(req.params.id).populate('reviews').populate('author');
-    console.log(field);
+    const field = await Field.findById(req.params.id).populate({
+        path: 'reviews',
+        populate: {
+            path: 'author',
+            model: 'User'
+        }
+    }).populate('author');
     if(!field){
         req.flash('error', 'Cannot find that field');
         return res.redirect('/fields');
     }
-    console.log(field);
     res.render('fields/show', { field });
 }))
 
