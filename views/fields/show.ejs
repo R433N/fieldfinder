@@ -48,13 +48,15 @@
                     <h5 class="card-title"><strong>Rating</strong>: <%= review.rating %></h5>
                     <h6 class="card-subtitle mb-2 text-muted">By <%= (review.author && review.author.username) ? review.author.username : 'Anonymous' %></h6>
                     <p class="card-text"><strong>Review:</strong> <%= review.body %></p>
-                    <% if(currentUser && review.author.equals(currentUser._id)) %>
+                    <% if(currentUser && review.author.equals(currentUser._id)) { %>
                     <form action="/fields/<%=field._id%>/reviews/<%=review._id%>?_method=DELETE" method="POST" class="d-inline">
                         <button class="btn btn-sm btn-danger">Delete</button>
                     </form>
                     <% } %>
                 </div>
+                
             </div>
+            <% } %>
     </div>
 </div>
     <footer>
