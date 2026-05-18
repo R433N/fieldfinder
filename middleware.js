@@ -3,18 +3,24 @@ const ExpressError = require('./utils/ExpressError');
 const Field = require('./models/field');    
 const Review = require('./models/review.js')
 
-module.exports.isLoggedIn = (req, res, next) => {
-    if (!req.isAuthenticated()) {
-        req.session.returnTo = req.get('Referrer') || req.originalUrl;
-        req.flash('error', 'You must be logged in first!');
-        return res.redirect('/login');
-    }
-    next();
-}
 
 module.exports.storeReturnTo = (req, res, next) => {
     if (req.session.returnTo) {
         res.locals.returnTo = req.session.returnTo;
+    }
+    next();
+}
+
+module.exports.isLoggedIn = (req, res, next) => {
+    if (!req.isAuthenticated()) {
+        if (req.method === 'GET') {
+            req.session.returnTo = req.originalUrl;
+        } else {
+            req.session.returnTo = req.get('Referrer');
+        }
+
+        req.flash('error', 'You must be logged in first!');
+        return res.redirect('/login');
     }
     next();
 }
