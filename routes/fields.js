@@ -6,11 +6,18 @@ const ExpressError = require('../utils/ExpressError')
 const Field = require('../models/field');
 const{isLoggedIn, validateField, isAuthor} = require('../middleware');
 const fields = require('../controllers/field');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 router.route('/')
     .get(catchAsync(fields.index))
-    .post(isLoggedIn, validateField, catchAsync(fields.createField));
-
+    //.post(isLoggedIn, validateField, catchAsync(fields.createField));
+    .post(upload.array('image'), (req, res) => {
+        res.send({ 
+            body: req.body, 
+            files: req.files 
+        });
+    })
 router.get('/new', isLoggedIn, fields.renderNewForm);
 
 router.route('/:id')
