@@ -3,7 +3,7 @@ const Joi = require('joi')
        field: Joi.object({
            title: Joi.string().required(),
            location: Joi.string().required(),
-           image: Joi.string().required(),
+           //image: Joi.string().required(),
            fieldType: Joi.string().required(),
            phone: Joi.string().required()
        }).required()

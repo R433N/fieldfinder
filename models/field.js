@@ -4,7 +4,12 @@ const Schema = mongoose.Schema;
 
 const fieldSchema = new Schema({
     title:  String ,
-    image: String,
+    images: [
+        {
+            url: String,
+            filename: String
+        }
+    ],
     location:  String ,
     fieldType:  String,
     phone: { type: String },

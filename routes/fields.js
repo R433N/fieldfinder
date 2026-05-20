@@ -7,17 +7,13 @@ const Field = require('../models/field');
 const{isLoggedIn, validateField, isAuthor} = require('../middleware');
 const fields = require('../controllers/field');
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
+const{storage} = require("../cloudinary");
+const upload = multer({ storage });
 
 router.route('/')
     .get(catchAsync(fields.index))
-    //.post(isLoggedIn, validateField, catchAsync(fields.createField));
-    .post(upload.array('image'), (req, res) => {
-        res.send({ 
-            body: req.body, 
-            files: req.files 
-        });
-    })
+    .post(isLoggedIn, upload.array('image'), validateField,  catchAsync(fields.createField));
+
 router.get('/new', isLoggedIn, fields.renderNewForm);
 
 router.route('/:id')
