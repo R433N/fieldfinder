@@ -15,10 +15,6 @@
                 <div class="valid-feedback">Looks good!</div>
                 <div class="invalid-feedback">Location is required!</div>
             </div>
-
-            <div class="mb-3">
-                <input type="file" name="image" id="" multiple>
-            </div>
             <!-- <div class="mb-3">
                 <label class= "form-label" for="image">Image URL</label>
                 <input class="form-control" type="text" id="image" name="field[image]" required>
@@ -40,12 +36,20 @@
                 <input class="form-control" type="text" id="phone" name="field[phone]" placeholder="(123)-456-7890" required>
                 <div class="invalid-feedback">Type N/A if unapplicable.</div>
             </div>
+            <div class="input-group mb-3">
+                <label class="btn btn-outline-secondary mb-0" for="image">Browse</label>
+                <label class="form-control text-muted mb-0" for="image" id="file-label">Choose Image(s)</label>
+                <input class="d-none" type="file" id="image" name="image" multiple 
+                    onchange="document.getElementById('file-label').innerText = Array.from(this.files).map(f => f.name).join(', ') || 'Choose Image(s)'">
+            </div>
 
             <div class="mb-3">
               <button class="btn btn-success">Add Field Location</button>
             </div>
             <a href="/fields">All Fields</a>
             </form>
+
+            
 
         </div>
     </div>
