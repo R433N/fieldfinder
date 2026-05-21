@@ -6,7 +6,8 @@ const Joi = require('joi')
            //image: Joi.string().required(),
            fieldType: Joi.string().required(),
            phone: Joi.string().required()
-       }).required()
+       }).required(),
+       deleteImages: Joi.array()
 
 
    })
