@@ -22,9 +22,18 @@ const seedDB = async() => {
             author: '6a03c0e0c601c25fdaf607c2',
             location: `${cities[random50].name}, ${cities[random50].province}`,
             title: `${sample(fieldNames)}`,
-            image: `https://picsum.photos/400?random=${Math.random()}`,
             fieldType: 'Artificial Grass',
-            phone: '123-456-7890'
+            phone: '123-456-7890',
+            images: [
+                {
+                url: 'https://res.cloudinary.com/doaxyxcdv/image/upload/v1779348535/FieldFinder/mnah9puer0ezrnomgwxz.png',
+                filename: 'FieldFinder/mnah9puer0ezrnomgwxz',
+                },
+                {
+                url: 'https://res.cloudinary.com/doaxyxcdv/image/upload/v1779348535/FieldFinder/himey4ywkyqnks3rnilh.jpg',
+                filename: 'FieldFinder/himey4ywkyqnks3rnilh',
+                }
+            ]
         })
         await test.save();
     }
