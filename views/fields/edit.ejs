@@ -3,7 +3,7 @@
     <div class="row">
     <h1 class="text-center">Edit Field</h1>
     <div class="col-6 offset-3">
-        <form action="/fields/<%= field._id %>?_method=PUT" method="POST" novalidate class="validatedform">
+        <form action="/fields/<%= field._id %>?_method=PUT" method="POST" novalidate class="validatedform" enctype="multipart/form-data">
 
             <div class="mb-3">
             <label class= "form-label"for="title">Title</label>
@@ -18,10 +18,8 @@
             <div class="invalid-feedback">Location is required!</div>
         </div>
         <div class="mb-3">
-            <label class= "form-label" for="image">Image URL</label>
-            <input class="form-control" type="text" id="image" name="field[image]" value="<%=field.image %>" required>
-            <div class="valid-feedback">Looks good!</div>
-            <div class="invalid-feedback">Please provide an Image URL.</div>
+            <label class= "form-label" for="image">Add Images</label>
+            <input type="file" name="image" id="image" multiple>
         </div>
         
         <div class="mb-3">

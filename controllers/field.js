@@ -46,9 +46,12 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateField = async (req, res) => {
     const {id} = req.params;
-    const f = await Field.findByIdAndUpdate(id, { ...req.body.field });
+    const field = await Field.findByIdAndUpdate(id, { ...req.body.field });
+    const imgs = req.files.map(f => ({url: f.path, filename:f.filename}));
+    field.images.push(...imgs);
+    await field.save();
     req.flash('success', 'Successfully updated field!');
-    res.redirect(`/fields/${f._id}`);
+    res.redirect(`/fields/${field._id}`);
 };
 
 module.exports.deleteField = async (req,res) => {
