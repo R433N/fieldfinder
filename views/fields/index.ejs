@@ -10,7 +10,11 @@
 
                 
                 <div class="col-md-4">
-                    <img class="img-fluid" alt="" src ="<%=field.images[0].url%>">
+                    <% if (field.images && field.images.length) { %>
+                        <img class="img-fluid" alt="" src="<%= field.images[0].url %>">
+                    <% } else { %>
+                        <div class="img-fluid bg-light d-flex align-items-center justify-content-center text-muted" style="min-height: 200px;">No image</div>
+                    <% } %>
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
