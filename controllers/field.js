@@ -20,7 +20,7 @@ module.exports.createField = async (req, res) => {
     }).send()
     const field = new Field(req.body.field);
     field.geometry = geoData.body.features[0].geometry;
-    field.images = req.files.map(f => ({url: f.path, filename:f.filename}));
+    field.images = (req.files || []).map(f => ({ url: f.path, filename: f.filename }));
     field.author = req.user._id;
     await field.save();
     console.log(field);
@@ -57,7 +57,7 @@ module.exports.updateField = async (req, res) => {
     const {id} = req.params;
     console.log(req.body)
     const field = await Field.findByIdAndUpdate(id, { ...req.body.field });
-    const imgs = req.files.map(f => ({url: f.path, filename:f.filename}));
+    const imgs = (req.files || []).map(f => ({ url: f.path, filename: f.filename }));
     field.images.push(...imgs);
     if (req.body.deleteImages){
             for(let filename of req.body.deleteImages){
