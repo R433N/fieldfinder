@@ -13,7 +13,18 @@ ImageSchema.virtual('thumbnail').get(function() {
 const fieldSchema = new Schema({
     title:  String ,
     images: [ImageSchema],
-    location:  String ,
+    location: String,
+    geometry: {
+      type: {
+        type: String,
+        enum: ['Point'],
+        required: true
+      },
+      coordinates: {
+        type: [Number],
+        required: true
+      }
+    },
     fieldType:  String,
     phone: { type: String },
     author: {

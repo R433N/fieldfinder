@@ -26,12 +26,12 @@ const seedDB = async() => {
             phone: '123-456-7890',
             images: [
                 {
-                url: 'https://res.cloudinary.com/doaxyxcdv/image/upload/v1779348535/FieldFinder/mnah9puer0ezrnomgwxz.png',
-                filename: 'FieldFinder/mnah9puer0ezrnomgwxz',
+                url: 'https://res.cloudinary.com/doaxyxcdv/image/upload/v1779350067/FieldFinder/svubtbdkhxhjsac3dfnu.jpg',
+                filename: 'FieldFinder/svubtbdkhxhjsac3dfnu',
                 },
                 {
-                url: 'https://res.cloudinary.com/doaxyxcdv/image/upload/v1779348535/FieldFinder/himey4ywkyqnks3rnilh.jpg',
-                filename: 'FieldFinder/himey4ywkyqnks3rnilh',
+                url: 'https://res.cloudinary.com/doaxyxcdv/image/upload/v1779229101/main-sample.png',
+                filename: 'FieldFinder/main-sample',
                 }
             ]
         })
